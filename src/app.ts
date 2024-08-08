@@ -7,10 +7,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+app.use(express.static(__dirname + '/../public'))
 
 app.post('/users', async (req, res) => {
   const db = await connect();
@@ -31,4 +28,24 @@ app.get('/users', async (req, res) => {
   const users = await db.all('SELECT * FROM users');
 
   res.json(users);
+});
+
+app.put('/users/:id', async (req, res) => {
+  const db = await connect();
+  const { name, email } = req.body;
+  const { id } = req.params;
+
+  await db.run('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+  const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+
+  res.json(user);
+});
+
+app.delete('/users/:id', async (req, res) => {
+  const db = await connect();
+  const { id } = req.params;
+
+  await db.run('DELETE FROM users WHERE id = ?', [id]);
+
+  res.json({ message: 'User deleted' });
 });

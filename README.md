@@ -80,7 +80,6 @@ app.listen(port, () => {
 
 - Abra o vscode, ligue o server, e crie um arquivo `database.ts` dentro da pasta `src` e adicione o seguinte código:
 
-
 import { open, Database} from 'sqlite';
 import sqlite3 from 'sqlite3';
 
@@ -106,7 +105,7 @@ export async function connect() {
   return db;
 }
 
-## zadicionando um banco de daod ao servidor
+## adicionando um banco de daod ao servidor
 
 -Vá na pasta `app.ts` e substitua o código que está lá pelo código abaixo:
 
@@ -167,4 +166,32 @@ app.get('/users', async (req, res) => {
   const users = await db.all('SELECT * FROM users');
 
   res.json(users);
+});
+
+## editando os usuários
+
+- crie a rota '/usaers/:id' adicionando o seguinte código na pasta app.ts
+
+app.put('/users/:id', async (req, res) => {
+  const db = await connect();
+  const { name, email } = req.body;
+  const { id } = req.params;
+
+  await db.run('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+  const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+
+  res.json(user);
+});
+
+## deletando um usuário
+
+- adicione na rota '/users/:id' o seguinte código também na pasta app.ts
+
+app.delete('/users/:id', async (req, res) => {
+  const db = await connect();
+  const { id } = req.params;
+
+  await db.run('DELETE FROM users WHERE id = ?', [id]);
+
+  res.json({ message: 'User deleted' });
 });
