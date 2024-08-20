@@ -5,7 +5,7 @@
 
 - Depois disso, crie uma pasta, abra o github, va na opção "clone git repository" vá no repositório que voce criou, vá na opção "code", copie o link e coloque na barra de pesquisa a cima. 
 
-- Nisso, selecione a pasta que voce criou antes. Agora, va na opção "terminal", depois na opção "abrir novo terminal" e escreva as linhas a baixo para criar o seu servidor. (não escreva a ultima linha, ela não vai rodar, voce tem que ir em "scr" e criar umarquivo app.ts manualmente)
+- Nisso, selecione a pasta que voce criou antes. Agora, va na opção "terminal", depois na opção "abrir novo terminal" e escreva as linhas a baixo para criar o seu servidor. crie um arquivo chamado app.ts dentro de src
 
 ```bash
 npm init -y
@@ -13,7 +13,6 @@ npm install express cors sqlite3 sqlite
 npm install --save-dev typescript nodemon ts-node @types/express @types/cors
 npx tsc --init
 mkdir src
-touch src/app.ts
 ```
 
 ## Configuranado o `tsconfig.json`
@@ -74,13 +73,13 @@ app.listen(port, () => {
 
 ## Testando o servidor
 
-- Abra o navegador e digite `http://localhost:3333`, você deverá ver a mensagem `Hello World`. Parabens voce agora tem um local host :D
+- Abra o navegador e digite `http://localhost:3333`, você deverá ver a mensagem `Hello World`. Parabens voce agora tem um local host \:D
 
-## configurendo o banco de dados
+## configurando o banco de dados
 
 - Abra o vscode, ligue o server, e crie um arquivo `database.ts` dentro da pasta `src` e adicione o seguinte código:
 
-```t
+```typescript
 import { open, Database} from 'sqlite';
 import sqlite3 from 'sqlite3';
 
@@ -108,9 +107,9 @@ export async function connect() {
 ```
 ## adicionando um banco de dados ao servidor
 
--Vá na pasta `app.ts` e substitua o código que está lá pelo código abaixo:
+- Vá na pasta `app.ts` e substitua o código que está lá pelo código abaixo:
 
-```t
+```typescript
 import express from 'express';
 import cors from 'cors';
 import { connect } from './database';
@@ -138,24 +137,18 @@ app.post('/users', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-app.get('/users', async (req, res) => {
-  const db = await connect();
-  const users = await db.all('SELECT * FROM users');
-
-  res.json(users);
-});
 ``` 
 ## testando a inserção de dados
 
 - No vscode, vá na barra da esquerda e clique no ultimo ícone, nisso, voce pesquisará po `REST client` e baixe-o.
 - Crie uma pasta `ts.http` e insira o seguinte código:
 
-```
+```http
 {
   "name": "John Doe",
-  "email": "
+  "email": "john@doe.com"
 }
+```
 
 - E se tudo ocorrer bem, voce verá a resposta com o usuário e o email inseridos
 
@@ -163,7 +156,7 @@ app.get('/users', async (req, res) => {
 
  - Para listar os usuários, voce deverá colocar a rota `/users` no servidor, para isso, vá na pasta `app.ts` e adicione o seguinte código no final:
  
- ```
+ ```typescript
  app.get('/users', async (req, res) => {
   const db = await connect();
   const users = await db.all('SELECT * FROM users');
@@ -175,7 +168,8 @@ app.get('/users', async (req, res) => {
 ## editando os usuários
 
 - crie a rota '/usaers/:id' adicionando o seguinte código na pasta app.ts
-```
+
+```typescript
 app.put('/users/:id', async (req, res) => {
   const db = await connect();
   const { name, email } = req.body;
@@ -192,7 +186,7 @@ app.put('/users/:id', async (req, res) => {
 
 - adicione na rota '/users/:id' o seguinte código também na pasta app.ts
 
-```
+```typescript
 app.delete('/users/:id', async (req, res) => {
   const db = await connect();
   const { id } = req.params;
@@ -204,9 +198,10 @@ app.delete('/users/:id', async (req, res) => {
 ```
 
 ## criando a pasta public
+
 - crie uma pasta com o nome public fora do src, e em seguida copie e cole o seguite código:
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -308,11 +303,11 @@ app.delete('/users/:id', async (req, res) => {
 </body>
 
 </html>
+```
 
+- agora como último passo, remova todo o código de `app.ts` copie e cole o seguinte código na pasta `app.ts`
 
-- agora como último passo, copie e cole o seguinte código na pasta `app.ts`
-
-```t
+```typescript
 import express from 'express'
 import cors from 'cors'
 import { connect } from './database'
