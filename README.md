@@ -308,7 +308,7 @@ app.delete('/users/:id', async (req, res) => {
 </body>
 
 </html>
-```
+
 
 - agora como último passo, copie e cole o seguinte código na pasta `app.ts`
 
